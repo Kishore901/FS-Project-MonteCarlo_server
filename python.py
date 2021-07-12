@@ -39,14 +39,18 @@ import sys
 #     st = sys.argv[1]
 #     print(st + 'from python')
 import numpy as np
-import pandas_datareader as pdr
+# import pandas_datareader as pdr
+from pandas_datareader import data as pdr
 import datetime as dt
 import pandas as pd
+import yfinance as fyf
+fyf.pdr_override()
 
 tickers = sys.argv[1:]
 start = dt.datetime(2020, 1, 1)
 
-data = pdr.get_data_yahoo(tickers, start)
+# data = pdr.get_data_yahoo(tickers, start)
+data = fyf.download(tickers,start)
 data = data['Adj Close']
 log_returns = np.log(data/data.shift())
 # Monte Carlo Simulation

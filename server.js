@@ -18,8 +18,8 @@ app.listen(port, () => {
 app.get('/', (req, res) => {
   console.log('dummy');
 });
-// for adding new data
 
+// for adding new data
 app.post('/add', (req, res) => {
   console.log(req.body);
   const present = fs.readFileSync('./data/stocks.json');
@@ -51,7 +51,6 @@ app.post('/add', (req, res) => {
             if (stocks.id === req.body.id) {
               res.send(stocks.addItem);
             }
-            //
           });
         }
       );
@@ -85,7 +84,6 @@ app.post('/add', (req, res) => {
         if (stocks.id === req.body.id) {
           res.send(stocks.addItem);
         }
-        //
       });
     }
   );
@@ -106,6 +104,7 @@ app.get('/getstocks/:id', (req, res) => {
   res.send(arr);
 });
 
+// updating the stock values
 app.get(
   '/updatestock/:id/:editvalue/:oldvalue/:editingQuant/:oldQuant',
   (req, res) => {
@@ -126,7 +125,6 @@ app.get(
         });
         return;
       }
-      //
     });
 
     fs.writeFile(
@@ -148,14 +146,11 @@ app.get(
           if (stocks.id === id) {
             res.send(stocks.addItem);
           }
-          //
         });
       }
     );
   }
 );
-
-//delete a value
 
 app.delete('/delete/:id/:val/:quant', (req, res) => {
   const { id, val, quant } = req.params;
@@ -169,8 +164,6 @@ app.delete('/delete/:id/:val/:quant', (req, res) => {
         if (items[0] === val && items[1] === quant) {
           console.log('deleting');
           stock.addItem.splice(index, 1);
-          // const newStock = stock.addItem;
-          // console.log(newStock);
           return;
         }
       });
@@ -196,13 +189,10 @@ app.delete('/delete/:id/:val/:quant', (req, res) => {
         if (stocks.id === id) {
           res.send(stocks.addItem);
         }
-        //
       });
     }
   );
 });
-
-// to get data from python script
 
 app.get('/getsimdata/:id', (req, res) => {
   const id = req.params.id;
@@ -220,17 +210,16 @@ app.get('/getsimdata/:id', (req, res) => {
 
       return;
     }
-    //
   });
-  // console.log(data);
+
   data.forEach((item) => {
     tickers.push(item[0]);
   });
-  // console.log(tickers);
+
   tickers.forEach((item) => {
     response.push([[item]]);
   });
-  // console.log(response);
+
   let options = {
     mode: 'text',
     encoding: 'utf8',
@@ -242,14 +231,15 @@ app.get('/getsimdata/:id', (req, res) => {
 
   PythonShell.run('python.py', options, function (err, results) {
     if (err) throw err;
-    // results is an array consisting of messages collected during execution
-    // console.log('results: %j', results);
+    let finalResult = [];
+    finalResult = results;
+    console.log(finalResult.slice(1));
+    finalResult = finalResult.slice(1);
     let i = 0;
-    results.forEach((ele) => {
+    finalResult.forEach((ele) => {
       response[i].push([ele]);
       i++;
     });
-    console.log(response);
     res.send(response);
   });
 });
